@@ -1,4 +1,5 @@
 from planner.planner import Planner
+from kubernetes.executor import KubernetesExecutor
 
 def main():
     print("\n🚀 Welcome to KubePilot")
@@ -8,9 +9,16 @@ def main():
 
     planner = Planner()
 
-    intent = planner.get_intent(question)
+    action = planner.plan(question)
 
-    print(f"\nIntent: {intent}")
+    print(action)
+
+    executor = KubernetesExecutor()
+
+    if action.intent.value == "list_pods":
+        output = executor.execute(["kubectl", "get", "pods"])
+
+        print(output)
 
 
 if __name__ == "__main__":
